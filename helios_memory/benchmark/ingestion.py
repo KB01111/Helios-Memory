@@ -47,6 +47,8 @@ def chunk_text(text: str, chunk_size_tokens: int) -> list[str]:
 
 def find_needle_chunk_index(chunks: list[str], needle_text: str) -> int | None:
     normalized = needle_text.strip().lower()
+    if not normalized:
+        return None
     for index, chunk in enumerate(chunks):
         if normalized in chunk.lower():
             return index
