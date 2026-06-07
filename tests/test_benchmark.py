@@ -45,7 +45,9 @@ class TestHaystackGeneration:
         base = build_repeating_haystack(500)
         needle = "END NEEDLE."
         text, placement = insert_needle_at_depth(base, needle, 100.0)
+        expected_final_index = count(base)
         assert text.endswith(needle)
+        assert placement.insertion_token_index == expected_final_index
 
     def test_build_haystack_with_needle_records_depth(self) -> None:
         build = build_haystack_with_needle(600, 50.0)
@@ -100,7 +102,7 @@ class TestRetrievalIntegration:
         self,
         local_stores: tuple[object, EpisodicMemoryStore, VectorArchive],
     ) -> None:
-        _, episodic, vector = local_stores
+        _, _episodic, vector = local_stores
         build = build_haystack_with_needle(800, 0.0)
         query = derive_retrieval_query(build.needle.question)
 

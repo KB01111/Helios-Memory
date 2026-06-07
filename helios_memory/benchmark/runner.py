@@ -85,9 +85,13 @@ async def run_cell(
 
     vector = SQLiteVectorArchive(db_path)
     episodic = SQLiteEpisodicStore(db_path)
-    await vector.connect()
-    await episodic.connect()
     try:
+        await vector.connect()
+        try:
+            await episodic.connect()
+        except Exception:
+            await vector.close()
+            raise
         _, _, needle_index = await ingest_haystack_vector(
             vector,
             build,

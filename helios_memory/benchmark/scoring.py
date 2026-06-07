@@ -37,7 +37,6 @@ def score_ranked_contents(
 ) -> RetrievalScore:
     """Compute HitRate@k, Recall@k, and MRR for ranked retrieval results."""
     examined = ranked_contents[:top_k]
-    examined = ranked_contents[:top_k]
     normalized_expected = _normalize(expected_answer)
     if not normalized_expected:
         return RetrievalScore(
@@ -49,6 +48,9 @@ def score_ranked_contents(
             chunks_examined=len(examined),
         )
     rank: int | None = None
+    for i, content in enumerate(examined, start=1):
+        if normalized_expected in _normalize(content):
+            rank = i
             break
 
     hit = rank is not None

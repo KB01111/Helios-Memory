@@ -10,7 +10,7 @@ def _load_encoding():
         import tiktoken
 
         return tiktoken.get_encoding(_ENCODING_NAME)
-    except ImportError:
+    except Exception:
         return None
 
 
@@ -24,20 +24,22 @@ def encoding_name() -> str:
 def encode(text: str) -> list[int]:
     if _ENCODING is not None:
         return _ENCODING.encode(text)
-    # ~4 chars per token fallback when tiktoken is unavailable.
-    return list(range(max(1, len(text) // 4)))
+    # Fallback: encode text as UTF-8 bytes for reversibility.
+    return list(text.encode("utf-8"))
 
 
 def decode(tokens: list[int]) -> str:
     if _ENCODING is not None:
         return _ENCODING.decode(tokens)
-    return "x" * max(1, len(tokens) * 4)
+    # Fallback: decode bytes back to original string.
+    return bytes(tokens).decode("utf-8")
 
 
 def count(text: str) -> int:
     if _ENCODING is not None:
         return len(_ENCODING.encode(text))
-    return max(1, len(text) // 4)
+    # Fallback: return byte length.
+    return len(text.encode("utf-8"))
 
 
 def truncate_to_tokens(text: str, max_tokens: int) -> str:

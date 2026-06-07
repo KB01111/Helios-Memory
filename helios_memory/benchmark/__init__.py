@@ -1,5 +1,7 @@
 """Needle-in-a-haystack benchmarking for Helios Memory retrieval tiers."""
 
+from typing import Any
+
 from helios_memory.benchmark.haystack import (
     build_haystack_with_needle,
     build_repeating_haystack,
@@ -37,7 +39,7 @@ __all__ = [
 ]
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> Any:
     if name in {
         "derive_retrieval_query",
         "format_report",

@@ -67,7 +67,6 @@ class BenchmarkCellResult:
 @dataclass(slots=True)
 class BenchmarkReport:
     """Aggregate benchmark output."""
-    started_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     run_name: str
     cells: list[BenchmarkCellResult] = field(default_factory=list)
     started_at: datetime = field(default_factory=datetime.utcnow)
