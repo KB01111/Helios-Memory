@@ -22,7 +22,7 @@ def chunk_text(text: str, chunk_size_tokens: int) -> list[str]:
     chunks: list[str] = []
     current = ""
     for sentence in sentences:
-        candidate = f"{current}. {sentence}." if current else f"{sentence}."
+                candidate = f"{current} {sentence}." if current else f"{sentence}."
         if count(candidate) <= chunk_size_tokens:
             current = candidate
         else:
