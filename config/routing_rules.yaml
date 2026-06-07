@@ -1,0 +1,122 @@
+# Rule-based intent routing patterns for Helios Memory.
+# Categories are evaluated in priority order (see intent_router.py).
+
+priority:
+  - sensitive_request
+  - memory_lookup_needed
+  - project_context_needed
+  - small_talk
+  - task_request
+
+confidence:
+  keyword_match: 0.85
+  regex_match: 0.9
+  multiple_matches: 0.95
+  default_task: 0.6
+  llm_fallback: 0.7
+
+ambiguous_threshold: 0.5
+
+categories:
+  small_talk:
+    keywords:
+      - hello
+      - hi
+      - hey
+      - thanks
+      - thank you
+      - goodbye
+      - bye
+      - good morning
+      - good evening
+      - how are you
+      - nice to meet
+    regex:
+      - "(?i)^(hi|hello|hey|thanks|thank you|bye|goodbye)\\b"
+      - "(?i)\\b(how are you|what's up|whats up)\\b"
+    requires_memory: false
+    requires_archive: false
+
+  task_request:
+    keywords:
+      - please
+      - can you
+      - could you
+      - help me
+      - implement
+      - create
+      - fix
+      - update
+      - write
+      - build
+      - refactor
+      - add
+      - remove
+      - delete
+    regex:
+      - "(?i)\\b(please|can you|could you|help me)\\b"
+      - "(?i)\\b(implement|create|fix|update|write|build|refactor)\\b"
+    requires_memory: false
+    requires_archive: false
+
+  memory_lookup_needed:
+    keywords:
+      - remember
+      - recall
+      - last time
+      - previously
+      - before
+      - earlier
+      - we decided
+      - you said
+      - my preference
+      - what did i
+      - what did we
+    regex:
+      - "(?i)\\b(remember when|do you remember|recall when)\\b"
+      - "(?i)\\b(last time|previously|earlier we)\\b"
+      - "(?i)\\b(what did (i|we|you) (say|decide|prefer))\\b"
+    requires_memory: true
+    requires_archive: false
+
+  project_context_needed:
+    keywords:
+      - codebase
+      - repository
+      - repo
+      - file
+      - function
+      - class
+      - module
+      - documentation
+      - readme
+      - project structure
+      - source code
+      - where is
+      - how does
+    regex:
+      - "(?i)\\b(in the (code|codebase|repo|repository|project))\\b"
+      - "(?i)\\b(which file|what file|where is)\\b"
+      - "(?i)\\b(readme|docs|documentation)\\b"
+    requires_memory: false
+    requires_archive: true
+
+  sensitive_request:
+    keywords:
+      - password
+      - api key
+      - apikey
+      - secret
+      - credential
+      - private key
+      - ssh key
+      - token
+      - ssn
+      - social security
+      - credit card
+    regex:
+      - "(?i)\\b(api[_-]?key|password|secret|credential|private[_-]?key)\\b"
+      - "(?i)\\b(ssn|social security|credit card)\\b"
+      - "(?i)\\b(\\.env|credentials\\.json)\\b"
+    requires_memory: false
+    requires_archive: false

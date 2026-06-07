@@ -1,0 +1,51 @@
+# Helios Memory — local mode configuration example
+# Copy to config/local.yaml and adjust paths/models as needed.
+#
+# All three memory tiers (Holographic, Mnemosyne, OpenViking) share one SQLite file.
+# Reasoning uses FastFlowLM with optional Ollama fallback.
+
+# Deployment mode: local | cloud | hybrid
+mode: local
+
+# OpenAI-compatible provider endpoints (local inference)
+providers:
+  # FastFlowLM — default local NPU inference (AMD). Start the service before use.
+  fastflowlm_url: "http://127.0.0.1:52625/v1"
+  # Ollama — optional fallback when FastFlowLM is unavailable
+  ollama_url: "http://127.0.0.1:11434/v1"
+
+# Model names passed to providers (OpenAI-compatible model IDs)
+models:
+  # Used by rule-based router LLM fallback (planned)
+  routing_model: "gemma4-it:e2b"
+  # Used by memory synthesizer LLM path (planned; current synthesizer is template-based)
+  synthesis_model: "gemma4-it:e4b"
+  # Primary local reasoning model (FastFlowLM)
+  reasoning_model: "gemma4-it:e4b"
+  # Fallback model when FastFlowLM connection fails
+  ollama_model: "gemma4:12b"
+
+# Local SQLite storage — single database for all three tiers
+storage:
+  sqlite_path: "helios_memory.db"
+
+# Maximum token budget for the synthesized memory brief injected into reasoning
+memory_brief_max_tokens: 2000
+
+# Run async consolidation (extract/store memories) after each response
+consolidation_enabled: true
+
+# Privacy policy (relevant mainly for hybrid/cloud; safe defaults for local)
+privacy:
+  # Allow outbound cloud LLM calls (ignored in pure local mode for reasoning)
+  allow_cloud_inference: true
+  # Raw file uploads to cloud require explicit opt-in (default: blocked)
+  allow_raw_file_upload: false
+  # Redact sensitive patterns before any cloud transmission
+  redact_sensitive: true
+  # Block sensitive-classified content from cloud by default
+  block_sensitive_by_default: true
+  # Classifications permitted to reach cloud providers
+  allowed_classifications_for_cloud:
+    - public
+    - internal

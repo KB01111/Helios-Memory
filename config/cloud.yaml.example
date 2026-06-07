@@ -1,0 +1,49 @@
+# Helios Memory — cloud mode configuration example
+# Copy to config/cloud.yaml and set secrets via environment variables only.
+#
+# Stores: Upstash Redis (Holographic) + Supabase (Mnemosyne + OpenViking)
+# Reasoning: OpenAI-compatible cloud API with privacy enforcement
+#
+# Required env vars (set in shell or .env, never commit real values):
+#   HELIOS_CLOUD_API_KEY=your-cloud-api-key
+#   SUPABASE_URL=https://your-project.supabase.co
+#   SUPABASE_KEY=your-supabase-key
+#   SUPABASE_DB_URL=postgresql://...
+#   UPSTASH_REDIS_REST_URL=https://...
+#   UPSTASH_REDIS_REST_TOKEN=your-upstash-token
+
+mode: cloud
+
+providers:
+  # Not used for reasoning in cloud mode, but kept for consistency
+  fastflowlm_url: "http://127.0.0.1:52625/v1"
+  ollama_url: "http://127.0.0.1:11434/v1"
+
+models:
+  routing_model: "gemma4-it:e2b"
+  synthesis_model: "gemma4-it:e4b"
+  # Cloud reasoning model — override with HELIOS_CLOUD_MODEL env var
+  reasoning_model: "gpt-4o-mini"
+  ollama_model: "gemma4:12b"
+
+# sqlite_path unused in cloud mode (all tiers are cloud-backed)
+storage:
+  sqlite_path: "helios_memory.db"
+
+memory_brief_max_tokens: 2000
+consolidation_enabled: true
+
+# Strict privacy policy for cloud deployment
+privacy:
+  # Master switch for cloud LLM inference
+  allow_cloud_inference: true
+  # Raw private files are never uploaded without explicit opt-in
+  allow_raw_file_upload: false
+  # Redact API keys, emails, SSN-like patterns before cloud calls
+  redact_sensitive: true
+  # Block sensitive content from cloud providers by default
+  block_sensitive_by_default: true
+  # Only public and internal content may reach cloud (no sensitive/secret)
+  allowed_classifications_for_cloud:
+    - public
+    - internal

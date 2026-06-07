@@ -1,0 +1,48 @@
+# Helios Memory — hybrid mode configuration example
+# Copy to config/hybrid.yaml and set cloud secrets via environment variables.
+#
+# Hybrid layout (implemented in create_hybrid_stores):
+#   Holographic (L0): local SQLite cache — fast, private, low-latency
+#   Mnemosyne   (L1): Supabase episodic memory — shared across devices (MVP stub)
+#   OpenViking  (L2): Supabase vector archive — shared semantic search (MVP stub)
+#   Reasoning:        FastFlowLM locally (+ Ollama fallback)
+#
+# Trade-offs:
+#   + Hot cache stays on-device (no network round-trip for L0)
+#   + Episodic/archive can sync via Supabase for multi-session agents
+#   - Split consistency: cache may be stale relative to cloud episodic store
+#   - Cloud tiers require SUPABASE_* env vars; stubs return empty until implemented
+#
+# Required cloud env vars:
+#   SUPABASE_URL, SUPABASE_KEY, SUPABASE_DB_URL
+# Optional (if using cloud cache in a custom setup):
+#   UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN
+
+mode: hybrid
+
+providers:
+  fastflowlm_url: "http://127.0.0.1:52625/v1"
+  ollama_url: "http://127.0.0.1:11434/v1"
+
+models:
+  routing_model: "gemma4-it:e2b"
+  synthesis_model: "gemma4-it:e4b"
+  reasoning_model: "gemma4-it:e4b"
+  ollama_model: "gemma4:12b"
+
+# Local SQLite path — used for Holographic cache tier only in hybrid mode
+storage:
+  sqlite_path: "helios_hybrid_cache.db"
+
+memory_brief_max_tokens: 2000
+consolidation_enabled: true
+
+privacy:
+  # Local reasoning; cloud stores may still receive consolidated memories
+  allow_cloud_inference: true
+  allow_raw_file_upload: false
+  redact_sensitive: true
+  block_sensitive_by_default: true
+  allowed_classifications_for_cloud:
+    - public
+    - internal
