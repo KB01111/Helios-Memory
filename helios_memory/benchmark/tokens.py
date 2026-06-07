@@ -32,7 +32,7 @@ def decode(tokens: list[int]) -> str:
     if _ENCODING is not None:
         return _ENCODING.decode(tokens)
     # Fallback: decode bytes back to original string.
-    return bytes(tokens).decode("utf-8")
+    return bytes(tokens).decode("utf-8", errors="replace")
 
 
 def count(text: str) -> int:
