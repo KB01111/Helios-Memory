@@ -138,7 +138,7 @@ async def run_benchmark(config: BenchmarkConfig) -> BenchmarkReport:
         for depth_percent in config.depth_percents:
             if config.db_path is None:
                 # Separate in-memory DB per cell for isolation.
-                cell_db = f"file:bench_{context_length}_{int(depth_percent)}?mode=memory&cache=shared"
+                cell_db = f"file:bench_{context_length}_{depth_percent}?mode=memory&cache=shared"
             else:
                 cell_db = config.db_path
 
