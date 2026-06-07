@@ -25,19 +25,20 @@ def chunk_text(text: str, chunk_size_tokens: int) -> list[str]:
         candidate = f"{current}. {sentence}." if current else f"{sentence}."
         if count(candidate) <= chunk_size_tokens:
             current = candidate
-            continue
-        if current:
-            chunks.append(current)
-        if count(candidate) <= chunk_size_tokens:
-            current = candidate
-            continue
-        # Fallback for an oversized sentence: hard token split.
-        tokens = encode(candidate)
-        for start in range(0, len(tokens), chunk_size_tokens):
-            window = tokens[start : start + chunk_size_tokens]
-            if window:
-                chunks.append(decode(window))
-        current = ""
+        else:
+            if current:
+                chunks.append(current)
+            single_candidate = f"{sentence}."
+            if count(single_candidate) <= chunk_size_tokens:
+                current = single_candidate
+            else:
+                # Fallback for an oversized sentence: hard token split.
+                tokens = encode(single_candidate)
+                for start in range(0, len(tokens), chunk_size_tokens):
+                    window = tokens[start : start + chunk_size_tokens]
+                    if window:
+                        chunks.append(decode(window))
+                current = ""
 
     if current:
         chunks.append(current)
