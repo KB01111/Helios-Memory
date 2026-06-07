@@ -17,10 +17,11 @@ def _snap_to_period(context_tokens: list[int], insertion_point: int) -> int:
         return 0
     period_tokens = set(encode("."))
     lower_bound = max(0, insertion_point - MAX_PERIOD_SNAP)
-    while insertion_point > lower_bound:
-        if context_tokens[insertion_point - 1] in period_tokens:
-            return insertion_point
-        insertion_point -= 1
+    candidate = insertion_point
+    while candidate > lower_bound:
+        if context_tokens[candidate - 1] in period_tokens:
+            return candidate
+        candidate -= 1
     return insertion_point
 
 
