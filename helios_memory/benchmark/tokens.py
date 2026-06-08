@@ -35,11 +35,8 @@ def decode(tokens: list[int]) -> str:
     return bytes(tokens).decode("utf-8", errors="replace")
 
 
-def count(text: str) -> int:
-    if _ENCODING is not None:
-        return len(_ENCODING.encode(text))
     # Fallback: return byte length.
-    return len(text.encode("utf-8"))
+    return len(text.encode("utf-8")) // 4 or len(text.encode("utf-8"))
 
 
 def truncate_to_tokens(text: str, max_tokens: int) -> str:
