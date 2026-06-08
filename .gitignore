@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -20,3 +20,6 @@ htmlcov/
 .idea/
 .vscode/
 *.swp
+
+# Vendored NIAH reference (local clone)
+external/needle-in-a-haystack/

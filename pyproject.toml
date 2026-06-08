@@ -21,7 +21,14 @@ dev = [
     "pytest>=7.0",
     "pytest-asyncio>=0.21",
     "pyrefly>=1.0",
+    "tiktoken>=0.7",
 ]
+benchmark = [
+    "tiktoken>=0.7",
+]
+
+[project.scripts]
+helios-needle-benchmark = "helios_memory.benchmark.runner:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["helios_memory"]
