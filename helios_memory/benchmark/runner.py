@@ -85,8 +85,6 @@ async def run_cell(
 
     vector = SQLiteVectorArchive(db_path)
     episodic = SQLiteEpisodicStore(db_path)
-    vector = SQLiteVectorArchive(db_path)
-    episodic = SQLiteEpisodicStore(db_path)
     try:
         await vector.connect()
         await episodic.connect()
