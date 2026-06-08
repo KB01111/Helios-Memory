@@ -31,13 +31,16 @@ __all__ = [
     "RetrievalScore",
     "build_haystack_with_needle",
     "build_repeating_haystack",
+    "derive_retrieval_query",
     "exact_match_in_text",
+    "format_report",
     "insert_needle_at_depth",
+    "run_benchmark",
+    "run_cell",
     "score_episodic_retrieval",
     "score_ranked_contents",
     "score_vector_retrieval",
 ]
-
 
 def __getattr__(name: str) -> Any:
     if name in {
