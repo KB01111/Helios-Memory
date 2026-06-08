@@ -544,15 +544,13 @@ class TestScoringEdgeCases:
         score = score_vector_retrieval(archive, "eat a sandwich and sit in Dolores Park")
         assert score.hit is False
 
-    def test_score_vector_retrieval_l2_ranked_before_l1(self) -> None:
-        # L2 detail is ranked before L1 section; match in L2 → rank 1
         archive = TieredRetrieval(
             level_0=[],
-            level_1=[{"content": "eat a sandwich and sit in Dolores Park"}],
+            level_1=[{"content": "irrelevant section text"}],
             level_2=[{"content": "eat a sandwich and sit in Dolores Park"}],
         )
         score = score_vector_retrieval(archive, "eat a sandwich and sit in Dolores Park", top_k=5)
-        assert score.rank == 1  # L2 comes first
+        assert score.rank == 1  # L2 (rank 1) before L1 (rank 2)
 
     def test_score_vector_retrieval_chunk_without_content_key_ignored(self) -> None:
         archive = TieredRetrieval(
